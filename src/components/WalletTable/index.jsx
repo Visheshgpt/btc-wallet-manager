@@ -1,17 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MdDeleteOutline } from "react-icons/md";
 import Modal from "../Modal";
+import { useDispatch, useSelector } from "react-redux";
+import { SyncItem } from "@/utils/syncItems";
+import SyncQueue from "@/utils/SyncQueue";
+
+import BigNumber from "bignumber.js";
+import { deleteWallet, setSyncing } from "@/redux/walletReducer";
+
+const syncQueue = new SyncQueue();
+
+const formatBalance = (amount) => {
+  return new BigNumber(amount).div(1e8).toFormat();
+};
 
 const WalletTable = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
-  const [wallets, setWallets] = useState([]);
-  console.log("wallets", wallets);
+  const dispatch = useDispatch();
+  const wallets = useSelector((state) => state.wallet.wallets);
+  const info = useSelector((state) => state.wallet);
 
-  const handleDelete = (index) => {
-    const updatedWallets = [...wallets];
-    updatedWallets.splice(index, 1);
-    setWallets(updatedWallets);
+  useEffect(() => {
+    syncQueue.on("statusChange", () => {
+      dispatch(setSyncing(syncQueue.isSyncing));
+    });
+
+    // Cleanup function to remove the event listener
+    // return () => {
+    //   syncQueue.off("statusChange");
+    // };
+  }, [syncQueue, dispatch]);
+
+  const handleAddWalletQueue = (walletId, walletName) => {
+    console.log("walletId", walletId, walletName);
+    syncQueue.addToQueue(new SyncItem(dispatch, walletId, walletName));
+  };
+
+  const handleDelete = (address) => {
+    dispatch(deleteWallet({ address }));
   };
 
   return (
@@ -26,8 +53,7 @@ const WalletTable = () => {
         </button>
         <Modal
           isOpen={modalOpen}
-          wallets={wallets}
-          setWallets={setWallets}
+          handleAddWalletQueue={handleAddWalletQueue}
           onClose={() => setModalOpen(false)}
         />
       </div>
@@ -37,7 +63,7 @@ const WalletTable = () => {
         </p>
       </div>
       <div className="flex justify-between my-2 px-8">
-        <p className="text-[16px] text-[#474848] font-semibold">User</p>
+        <p className="text-[16px] text-[#474848] font-semibold">Wallet Name</p>
         <p className="text-[16px] text-[#474848] font-semibold">Address</p>
         <p className="text-[16px] text-[#474848] font-semibold ml-16">
           Holding
@@ -46,22 +72,27 @@ const WalletTable = () => {
       </div>
       {wallets &&
         wallets.length > 0 &&
-        wallets.map((value, index) => {
+        wallets.map((value) => {
+          // Assuming value.id is a unique identifier
+          const key = value.id || `${value.address}-${value.balance}`;
           return (
-            <>
-              <div className="bg-[#161C23] flex justify-between items-center p-2 px-8 mt-3">
-                <div className="flex items-center">
-                  <img src="/assets/BitCoin.svg" alt="loading..." />
-                  <p className="text-[#ADABAA] text-[16px]">{value.userName}</p>
-                </div>
-                <p className="text-[#ADABAA] text-[16px]">{value.address}</p>
-                <p className="text-[#ADABAA] text-[16px]">{value.Holding}</p>
-                <button onClick={() => handleDelete(index)}>
-                  {" "}
-                  <MdDeleteOutline className="text-[#ADABAA] text-[16px]" />{" "}
-                </button>
+            <div
+              className="bg-[#161C23] flex justify-between items-center p-2 px-8 mt-3"
+              key={key}
+            >
+              <div className="flex items-center">
+                <img src="/assets/BitCoin.svg" alt="Bitcoin logo" />
+                <p className="text-[#ADABAA] text-[16px]">{value.walletName}</p>
               </div>
-            </>
+              <p className="text-[#ADABAA] text-[16px]">{value.address}</p>
+
+              <p className="text-[#ADABAA] text-[16px]">
+                {formatBalance(value.balance)} BTC
+              </p>
+              <button onClick={() => handleDelete(value.address)}>
+                <MdDeleteOutline className="text-[#ADABAA] text-[16px]" />
+              </button>
+            </div>
           );
         })}
     </div>

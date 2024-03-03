@@ -1,21 +1,17 @@
 // next.config.js
 const nextConfig = {
-     
-  // webpack: (config, { webpack }) => {
-  //   // Enable WebAssembly experiments
-  //   config.experiments = {
-  //     asyncWebAssembly: true, // or syncWebAssembly: true
-  //   };
+  webpack5: true,
+  webpack: (config) => {
+    config.resolve.fallback = {
+      fs: false,
+      child_process: false,
+      net: false,
+      dns: false,
+      tls: false,
+    };
 
-  //   // Add a rule to handle WebAssembly files
-  //   config.module.rules.push({
-  //     test: /\.wasm$/,
-  //     type: "webassembly/async", // or "webassembly/sync"
-  //   });
-
-  //   return config;
-  // },
-
+    return config;
+  },
 };
 
 module.exports = nextConfig;

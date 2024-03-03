@@ -1,26 +1,21 @@
 import React, { useState } from "react";
-
+// import syncQueue from "@/utils/queue"
 // import { getAddress } from "@/utils/getP2pkhaddress"
 
-const Modal = ({ isOpen, onClose, wallets, setWallets, children }) => {
-  
+const Modal = ({ isOpen, onClose, handleAddWalletQueue, children }) => {
   const [walletName, setWalletName] = useState("");
   const [mnemonic, setMnemonic] = useState("");
 
   if (!isOpen) return null;
 
-  const handleAddWallet = async() => {
+  const handleAddWallet = async () => {
     // const address = await getAddress(mnemonic)
     // console.log("address", address);
 
-    const newWallets = [
-      ...wallets,
-      { userName: walletName, address: mnemonic, Holding: "BTC 123" },
-    ];
-    setWalletName('')
-    setMnemonic('')
-    setWallets(newWallets);
-    onClose()
+    handleAddWalletQueue(mnemonic, walletName);
+    setWalletName("");
+    setMnemonic("");
+    onClose();
   };
 
   return (
