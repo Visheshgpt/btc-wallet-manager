@@ -14,11 +14,11 @@ export class SyncItem {
     );
     const response = await result.json();
     const balance = response.balance;
-    const txId = response.txrefs && response.txrefs.length > 0 && response.txrefs[0]
+    const txId = response?.txrefs[0].tx_hash
     const tx = {} 
 
     if (txId) {
-      const txResult = await fetch(`https://api.blockcypher.com/v1/btc/main/txs/7593dfd2f183fea5ef40987fa6c89e20535649667724ae37c253767e7df9cb5f`)
+      const txResult = await fetch(`https://api.blockcypher.com/v1/btc/main/txs/${txId}`)
       const response = await txResult.json();
       tx.walletName = this.walletName;
       tx.address = this.walletId;

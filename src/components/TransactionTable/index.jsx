@@ -15,7 +15,7 @@ const TransactionTable = () => {
     const totalProcessedTx = [];
 
     totalTx?.forEach((tx) => {
-      tx.inputs.forEach((input, index) => {
+      tx?.inputs?.forEach((input, index) => {
         const txObj = {
           wallet: tx.walletName,
           date: new Date(tx.date),
@@ -39,11 +39,11 @@ const TransactionTable = () => {
       </div>
       <div className=" mt-10">
         <p className="text-[#ADABAA] text-[16px] border-b-2 border-[#1E2328] px-2">
-          Total Trasactions - 7
+          Total Trasactions - {txData.length}
         </p>
       </div>
       <div className="flex justify-between my-2 px-8">
-        <p className="text-[16px] text-[#474848] font-semibold">Coin</p>
+        <p className="text-[16px] text-[#474848] font-semibold">Date</p>
         <p className="text-[16px] text-[#474848] font-semibold">Wallet</p>
         <p className="text-[16px] text-[#474848] font-semibold">Amount</p>
         <p className="text-[16px] text-[#474848] font-semibold">Result</p>
