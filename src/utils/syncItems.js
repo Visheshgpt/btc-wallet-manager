@@ -9,15 +9,24 @@ export class SyncItem {
 
   async sync() {
     // Fetch balance for the walletId
-
-    console.log("ggg", this.walletId);
-
     const result = await fetch(
       `https://api.blockcypher.com/v1/btc/main/addrs/${this.walletId}`
     );
     const response = await result.json();
     const balance = response.balance;
-    const tx = "tx-3323434324";
+    const txId = response.txrefs && response.txrefs.length > 0 && response.txrefs[0]
+    const tx = {} 
+
+    if (txId) {
+      const txResult = await fetch(`https://api.blockcypher.com/v1/btc/main/txs/7593dfd2f183fea5ef40987fa6c89e20535649667724ae37c253767e7df9cb5f`)
+      const response = await txResult.json();
+      tx.walletName = this.walletName;
+      tx.address = this.walletId;
+      tx.date = response.confirmed;
+      tx.inputs = response.inputs;
+      tx.outputs = response.outputs
+    }
+
     console.log(`Syncing balance for wallet ${this.walletId}: ${balance}`);
 
     // Dispatch action to update wallet information

@@ -1,9 +1,10 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import SyncQueue from "@/utils/SyncQueue";
 import { SyncItem } from "@/utils/syncItems";
+import { setSyncing } from "@/redux/walletReducer";
 const syncQueue = new SyncQueue();
 
 const TopBar = () => {
@@ -11,12 +12,17 @@ const TopBar = () => {
   const data = useSelector((state) => state.wallet);
   const { isSyncing, wallets } = data;
 
+  useEffect(() => {
+    syncQueue.on("statusChange", () => {
+      dispatch(setSyncing(syncQueue.isSyncing));
+    });
+  }, [syncQueue, dispatch]);
+
   const addToQueue = () => {
     wallets?.forEach((element) => {
-      console.log("wallet", element);
-      syncQueue.addToQueue(
-        new SyncItem(dispatch, element.adress, element.walletName)
-      );
+      const walletAddress = element.address;
+      const walletName = element.walletName;
+      syncQueue.addToQueue(new SyncItem(dispatch, walletAddress, walletName));
     });
   };
 

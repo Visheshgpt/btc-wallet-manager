@@ -4,37 +4,27 @@ import Modal from "../Modal";
 import { useDispatch, useSelector } from "react-redux";
 import { SyncItem } from "@/utils/syncItems";
 import SyncQueue from "@/utils/SyncQueue";
-
-import BigNumber from "bignumber.js";
 import { deleteWallet, setSyncing } from "@/redux/walletReducer";
+import { formatBalance } from "@/utils/helper"
 
 const syncQueue = new SyncQueue();
 
-const formatBalance = (amount) => {
-  return new BigNumber(amount).div(1e8).toFormat();
-};
+
 
 const WalletTable = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const dispatch = useDispatch();
   const wallets = useSelector((state) => state.wallet.wallets);
-  const info = useSelector((state) => state.wallet);
 
   useEffect(() => {
     syncQueue.on("statusChange", () => {
       dispatch(setSyncing(syncQueue.isSyncing));
     });
-
-    // Cleanup function to remove the event listener
-    // return () => {
-    //   syncQueue.off("statusChange");
-    // };
   }, [syncQueue, dispatch]);
 
-  const handleAddWalletQueue = (walletId, walletName) => {
-    console.log("walletId", walletId, walletName);
-    syncQueue.addToQueue(new SyncItem(dispatch, walletId, walletName));
+  const handleAddWalletQueue = (walletAddress, walletName) => {
+    syncQueue.addToQueue(new SyncItem(dispatch, walletAddress, walletName));
   };
 
   const handleDelete = (address) => {
@@ -51,6 +41,7 @@ const WalletTable = () => {
           <img src="/assets/ImportAddIcon.png" alt="add-wallet-loading" />{" "}
           IMPORT WALLET
         </button>
+        
         <Modal
           isOpen={modalOpen}
           handleAddWalletQueue={handleAddWalletQueue}

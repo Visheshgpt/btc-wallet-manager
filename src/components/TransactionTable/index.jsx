@@ -1,70 +1,45 @@
-import React from "react";
+import { formatBalance } from "@/utils/helper";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const TransactionTable = () => {
-  const TransactionList = [
-    {
-      id: 1,
-      date: "12/11/2020",
-      time: "10:31:20 AM",
-      wallet: "Aru",
-      amount: "0.5268 BTC",
-      result: "RECEIVED",
-      status: "SUCCESS",
-    },
-    {
-      id: 2,
-      date: "12/11/2020",
-      time: "10:31:20 AM",
-      wallet: "Aru",
-      amount: "0.5268 BTC",
-      result: "RECEIVED",
-      status: "SUCCESS",
-    },
-    {
-      id: 3,
-      date: "12/11/2020",
-      time: "10:31:20 AM",
-      wallet: "Aru",
-      amount: "0.5268 BTC",
-      result: "RECEIVED",
-      status: "SUCCESS",
-    },
-    {
-      id: 4,
-      date: "12/11/2020",
-      time: "10:31:20 AM",
-      wallet: "Aru",
-      amount: "0.5268 BTC",
-      result: "RECEIVED",
-      status: "SUCCESS",
-    },
-    {
-      id: 5,
-      date: "12/11/2020",
-      time: "10:31:20 AM",
-      wallet: "Aru",
-      amount: "0.5268 BTC",
-      result: "RECEIVED",
-      status: "SUCCESS",
-    },
-    {
-      id: 6,
-      date: "12/11/2020",
-      time: "10:31:20 AM",
-      wallet: "Aru",
-      amount: "0.5268 BTC",
-      result: "RECEIVED",
-      status: "SUCCESS",
-    },
-  ];
+  const wallets = useSelector((state) => state.wallet.wallets);
+  const [txData, setTxData] = useState([]);
+
+  useEffect(() => {
+    const totalTx = [];
+    wallets?.forEach((element) => {
+      totalTx.push(element.tx);
+    });
+
+    const totalProcessedTx = [];
+
+    totalTx?.forEach((tx) => {
+      tx.inputs.forEach((input, index) => {
+        const txObj = {
+          wallet: tx.walletName,
+          date: new Date(tx.date),
+          amount: formatBalance(tx.outputs[index].value),
+          result:
+            input.addresses[0].toLowerCase() === tx.address.toLowerCase()
+              ? "SENT"
+              : "RECEIVED",
+          status: "SUCCESS",
+        };
+        totalProcessedTx.push(txObj);
+      });
+    });
+    setTxData(totalProcessedTx);
+  }, [wallets]);
+
   return (
     <div className="pt-5">
-        <div className="my-4">
-            <h5 className="text-[#C78D4E] text-[16px] font-bold">Transactions</h5>
-        </div>
+      <div className="my-4">
+        <h5 className="text-[#C78D4E] text-[16px] font-bold">Transactions</h5>
+      </div>
       <div className=" mt-10">
         <p className="text-[#ADABAA] text-[16px] border-b-2 border-[#1E2328] px-2">
-          Total Coins - 7
+          Total Trasactions - 7
         </p>
       </div>
       <div className="flex justify-between my-2 px-8">
@@ -74,15 +49,17 @@ const TransactionTable = () => {
         <p className="text-[16px] text-[#474848] font-semibold">Result</p>
         <p className="text-[16px] text-[#474848] font-semibold">Status</p>
       </div>
-      {TransactionList.map((value, index) => {
+      {txData.map((value, index) => {
         return (
           <>
             <div className="bg-[#161C23] flex justify-between items-center p-2 px-8 mt-3">
               <div className="flex items-center">
                 <img src="/assets/BitCoin.svg" alt="loading..." />
                 <div>
-                  <p className="text-[#ADABAA] text-[16px]">{value.date}</p>
-                  <p className="text-[#ADABAA] text-[12px]">{value.time}</p>
+                  <p className="text-[#ADABAA] text-[16px]">
+                    {value.date.toLocaleString()}
+                  </p>
+                  {/* <p className="text-[#ADABAA] text-[12px]">{value.time}</p> */}
                 </div>
               </div>
               <p className="text-[#ADABAA] text-[16px] mr-16">{value.wallet}</p>
