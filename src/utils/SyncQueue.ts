@@ -25,13 +25,14 @@ class SyncQueue extends EventEmitter {
     if (this.queue.length > 0) {
       this.isSyncing = true;
       this.emit("statusChange");
-      const item = this.queue.shift();
+      const item: SyncItem | undefined = this.queue.shift();
       try {
         if (item) {
           await item.sync();
         }
       } catch (error) {
         console.error(`Failed to sync item: ${error}`);
+        // item && this.queue.push(item);
       } finally {
         setTimeout(() => {
           this.syncNext();
