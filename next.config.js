@@ -1,17 +1,4 @@
-// next.config.js
-const nextConfig = {
-  webpack5: true,
-  webpack: (config) => {
-    config.resolve.fallback = {
-      fs: false,
-      child_process: false,
-      net: false,
-      dns: false,
-      tls: false,
-    };
+/** @type {import('next').NextConfig} */
+const nextConfig = {}
 
-    return config;
-  },
-};
-
-module.exports = nextConfig;
+module.exports = nextConfig

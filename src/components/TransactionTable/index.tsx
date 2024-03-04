@@ -1,22 +1,31 @@
 import { formatBalance } from "@/utils/helper";
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { RootState } from "@/redux/reducers";
 
-const TransactionTable = () => {
-  const wallets = useSelector((state) => state.wallet.wallets);
-  const [txData, setTxData] = useState([]);
+interface Transaction {
+  wallet: string;
+  date: Date;
+  amount: string;
+  result: "SENT" | "RECEIVED";
+  status: "SUCCESS";
+}
+
+const TransactionTable: React.FC = () => {
+  const wallets = useSelector((state: RootState) => state.wallet.wallets);
+  const [txData, setTxData] = useState<Transaction[]>([]);
 
   useEffect(() => {
-    const totalTx = [];
+    const totalTx: any = [];
     wallets?.forEach((element) => {
       totalTx.push(element.tx);
     });
 
-    const totalProcessedTx = [];
+    const totalProcessedTx: Transaction[] = [];
 
-    totalTx?.forEach((tx) => {
-      tx?.inputs?.forEach((input, index) => {
-        const txObj = {
+    totalTx?.forEach((tx: any) => {
+      tx?.inputs?.forEach((input: any, index: number) => {
+        const txObj: Transaction = {
           wallet: tx.walletName,
           date: new Date(tx.date),
           amount: formatBalance(tx.outputs[index].value),

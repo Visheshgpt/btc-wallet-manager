@@ -5,29 +5,28 @@ import { useDispatch, useSelector } from "react-redux";
 import { SyncItem } from "@/utils/syncItems";
 import SyncQueue from "@/utils/SyncQueue";
 import { deleteWallet, setSyncing } from "@/redux/walletReducer";
-import { formatBalance } from "@/utils/helper"
+import { formatBalance } from "@/utils/helper";
+import { RootState } from "@/redux/reducers";
 
 const syncQueue = new SyncQueue();
 
-
-
-const WalletTable = () => {
-  const [modalOpen, setModalOpen] = useState(false);
+const WalletTable: React.FC = () => {
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   const dispatch = useDispatch();
-  const wallets = useSelector((state) => state.wallet.wallets);
+  const wallets = useSelector((state: RootState) => state.wallet.wallets);
 
   useEffect(() => {
     syncQueue.on("statusChange", () => {
       dispatch(setSyncing(syncQueue.isSyncing));
     });
-  }, [syncQueue, dispatch]);
+  }, [dispatch]);
 
-  const handleAddWalletQueue = (walletAddress, walletName) => {
+  const handleAddWalletQueue = (walletAddress: string, walletName: string) => {
     syncQueue.addToQueue(new SyncItem(dispatch, walletAddress, walletName));
   };
 
-  const handleDelete = (address) => {
+  const handleDelete = (address: string) => {
     dispatch(deleteWallet({ address }));
   };
 
@@ -41,12 +40,14 @@ const WalletTable = () => {
           <img src="/assets/ImportAddIcon.png" alt="add-wallet-loading" />{" "}
           IMPORT WALLET
         </button>
-        
+
         <Modal
           isOpen={modalOpen}
           handleAddWalletQueue={handleAddWalletQueue}
           onClose={() => setModalOpen(false)}
-        />
+        >
+          <></>
+        </Modal>
       </div>
       <div className=" mt-10">
         <p className="text-[#ADABAA] text-[16px] border-b-2 border-[#1E2328] px-2">
@@ -65,7 +66,7 @@ const WalletTable = () => {
         wallets.length > 0 &&
         wallets.map((value) => {
           // Assuming value.id is a unique identifier
-          const key = value.id || `${value.address}-${value.balance}`;
+          const key = `${value.address}`;
           return (
             <div
               className="bg-[#161C23] flex justify-between items-center p-2 px-8 mt-3"

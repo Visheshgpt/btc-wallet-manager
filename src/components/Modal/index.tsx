@@ -1,16 +1,27 @@
+import { getAddress } from "@/utils/getP2pkhaddress";
 import React, { useState } from "react";
-// import syncQueue from "@/utils/queue"
-// import { getAddress } from "@/utils/getP2pkhaddress"
 
-const Modal = ({ isOpen, onClose, handleAddWalletQueue, children }) => {
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  handleAddWalletQueue: (walletAddress: string, walletName: string) => void;
+  children: React.ReactNode;
+}
+
+const Modal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  handleAddWalletQueue,
+  children,
+}) => {
   const [walletName, setWalletName] = useState("");
   const [mnemonic, setMnemonic] = useState("");
 
   if (!isOpen) return null;
 
   const handleAddWallet = async () => {
-    // const address = await getAddress(mnemonic)
-    // console.log("address", address);
+    const address = await getAddress(mnemonic);
+    console.log("address", address);
 
     handleAddWalletQueue(mnemonic, walletName);
     setWalletName("");
@@ -57,7 +68,7 @@ const Modal = ({ isOpen, onClose, handleAddWalletQueue, children }) => {
             <textarea
               onChange={(e) => setMnemonic(e.target.value)}
               className="bg-[#20242B] rounded-sm w-full p-1 mt-2 border-[#C5C5C545]"
-              rows="4"
+              rows={4}
             ></textarea>
           </div>
           <div>

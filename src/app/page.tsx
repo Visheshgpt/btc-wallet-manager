@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import TopBar from "@/components/TopBar";
 import SideBar from "@/components/SideBar";
 import { Provider } from "react-redux";

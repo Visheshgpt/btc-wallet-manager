@@ -1,9 +1,16 @@
-"use client";
 import React, { useState } from "react";
 import WalletTable from "../WalletTable";
 import TransactionTable from "../TransactionTable";
 
-const Tab = ({ label, Icon, onClick, isActive }) => (
+
+interface TabProps {
+  label: string;
+  Icon: string;
+  onClick: () => void;
+  isActive: boolean;
+}
+
+const Tab: React.FC<TabProps> = ({ label, Icon, onClick, isActive }) => (
   <div
     className={`cursor-pointer ${
       isActive ? "text-[#E2C19D] border-l-2 border-[#E2C19D]" : "text-white"
@@ -17,7 +24,7 @@ const Tab = ({ label, Icon, onClick, isActive }) => (
   </div>
 );
 
-const Sidebar = () => {
+const Sidebar: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   const tabs = [
@@ -25,7 +32,7 @@ const Sidebar = () => {
     { label: "Last Transactions", Icon: "/assets/transcantion icon.png" },
   ];
 
-  const handleTabClick = (index) => {
+  const handleTabClick = (index: number) => {
     setActiveTab(index);
   };
 
