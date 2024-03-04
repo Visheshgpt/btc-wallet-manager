@@ -21,11 +21,13 @@ export class SyncItem {
 
   async sync(): Promise<void> {
     const result = await fetch(
-      `${process.env.NEXT_PUBLIC_WALLET_API_MAINNET}/${this.walletId}`
+      `${process.env.NEXT_PUBLIC_WALLET_API_TESTNET}/${this.walletId}`
     );
     const response = await result.json();
     const balance = response.balance;
-    const txId = response?.txrefs[0]?.tx_hash;
+
+
+    const txId = response?.txrefs?.[0]?.tx_hash ?? '';
     const tx: Tx = {
       walletName: "",
       address: "",
@@ -36,7 +38,7 @@ export class SyncItem {
 
     if (txId) {
       const txResult = await fetch(
-        `${process.env.NEXT_PUBLIC_TX_API_MAINNET}/${txId}`
+        `${process.env.NEXT_PUBLIC_TX_API_TESTNET}/${txId}`
       );
       const txResponse = await txResult.json();
       tx.walletName = this.walletName;

@@ -20,13 +20,28 @@ const Modal: React.FC<ModalProps> = ({
   if (!isOpen) return null;
 
   const handleAddWallet = async () => {
-    const address = await getAddress(mnemonic);
-    console.log("address", address);
+    try {
+      const seedPhrase = mnemonic.trim();
+      if (!walletName || !seedPhrase) {
+        alert("Wallet name and seed phrase are required");
+        return;
+      }
 
-    handleAddWalletQueue(mnemonic, walletName);
-    setWalletName("");
-    setMnemonic("");
-    onClose();
+      const words = seedPhrase.split(" ");
+      const numWords = words.length;
+      if (![12, 15, 18, 21, 24].includes(numWords)) {
+        alert("mnemonic must have 12, 15, 18, 21, or 24 words");
+        return;
+      }
+
+      const address = await getAddress(seedPhrase);
+      address && handleAddWalletQueue(address, walletName);
+      setWalletName("");
+      setMnemonic("");
+      onClose();
+    } catch (error: any) {
+      alert(error.message);
+    }
   };
 
   return (
