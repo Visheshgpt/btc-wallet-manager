@@ -9,15 +9,19 @@ Bitcoin Wallet Manager is a web application that allows users to manage their Bi
 3. View transaction history
 4. Re-sync wallets to fetch the latest balance and transactions
 
-## Requirements
+## Live Demo
 
-Node.js version 18.17.0
+Check out the live demo [here](https://bitcoin-wallet-manager.vercel.app/).
+
 
 ## Installation
 
+### Requirements
+Node.js version 18.17.0
+
 1. Clone the repository:
    ```sh
-   git clone https://github.com/Visheshgpt/bitcoin-wallet-manager.git
+   git clone https://github.com/Visheshgpt/btc-wallet-manager.git
    ```
 2. Install dependencies:
    ```sh
