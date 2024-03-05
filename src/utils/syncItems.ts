@@ -21,7 +21,7 @@ export class SyncItem {
 
   async sync(): Promise<void> {
     const result = await fetch(
-      `${process.env.NEXT_PUBLIC_WALLET_API_TESTNET}/${this.walletId}`
+      `${process.env.NEXT_PUBLIC_WALLET_API_TESTNET}//${this.walletId}`
     );
     const response = await result.json();
     const balance = response.balance;

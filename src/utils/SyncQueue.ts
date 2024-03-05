@@ -5,7 +5,7 @@ interface SyncItem {
 }
 
 class SyncQueue extends EventEmitter {
-  public queue: SyncItem[];
+  private queue: SyncItem[];
   public isSyncing: boolean;
 
   constructor() {
@@ -32,7 +32,9 @@ class SyncQueue extends EventEmitter {
         }
       } catch (error) {
         console.error(`Failed to sync item: ${error}`);
-        // item && this.queue.push(item);
+        // add item to queue if fails
+        // can also add max retry and retry counter to prevents the sync to be called indefinetly.
+        item && this.queue.push(item);
       } finally {
         setTimeout(() => {
           this.syncNext();
