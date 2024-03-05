@@ -2,30 +2,19 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/reducers";
 import { setSyncing } from "@/redux/walletReducer";
-import SyncQueue from "@/utils/SyncQueue";
 import { SyncItem } from "@/utils/syncItems";
+import { useSyncQueueContext } from "@/context";
 
-const syncQueue = new SyncQueue();
-
-const TopBar: React.FC = () => {
+const TopBar = () => {
   const dispatch = useDispatch();
+  const { syncQueue: syncQueueInstance } = useSyncQueueContext();
   const { isSyncing, wallets } = useSelector(
     (state: RootState) => state.wallet
   );
 
-  useEffect(() => {
-    const handleStatusChange = () => {
-      dispatch(setSyncing(syncQueue.isSyncing));
-    };
-    syncQueue.on("statusChange", handleStatusChange);
-    return () => {
-      syncQueue.off("statusChange", handleStatusChange);
-    };
-  }, [dispatch]);
-
   const addToQueue = () => {
     wallets?.forEach(({ address, walletName }) => {
-      syncQueue.addToQueue(new SyncItem(dispatch, address, walletName));
+      syncQueueInstance.addToQueue(new SyncItem(dispatch, address, walletName));
     });
   };
 

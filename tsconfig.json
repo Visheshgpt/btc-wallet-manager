@@ -21,6 +21,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/redux/walletReducer.js", "src/components/SideBar/index.jsx", "src/utils/getP2pkhaddress.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/redux/walletReducer.js", "src/components/SideBar/index.jsx", "src/utils/getP2pkhaddress.js", "src/context/index.tss"],
   "exclude": ["node_modules"]
 }

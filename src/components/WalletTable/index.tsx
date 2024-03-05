@@ -3,27 +3,22 @@ import { MdDeleteOutline } from "react-icons/md";
 import Modal from "../Modal";
 import { useDispatch, useSelector } from "react-redux";
 import { SyncItem } from "@/utils/syncItems";
-import SyncQueue from "@/utils/SyncQueue";
-import { deleteWallet, setSyncing } from "@/redux/walletReducer";
+import { deleteWallet } from "@/redux/walletReducer";
 import { formatBalance } from "@/utils/helper";
 import { RootState } from "@/redux/reducers";
-
-const syncQueue = new SyncQueue();
+import { useSyncQueueContext } from "@/context";
 
 const WalletTable: React.FC = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const { syncQueue: syncQueueInstance } = useSyncQueueContext();
 
   const dispatch = useDispatch();
   const wallets = useSelector((state: RootState) => state.wallet.wallets);
 
-  useEffect(() => {
-    syncQueue.on("statusChange", () => {
-      dispatch(setSyncing(syncQueue.isSyncing));
-    });
-  }, [dispatch]);
-
   const handleAddWalletQueue = (walletAddress: string, walletName: string) => {
-    syncQueue.addToQueue(new SyncItem(dispatch, walletAddress, walletName));
+    syncQueueInstance.addToQueue(
+      new SyncItem(dispatch, walletAddress, walletName)
+    );
   };
 
   const handleDelete = (address: string) => {
